@@ -1,32 +1,82 @@
+from ast import parse
+import shutil
 from bs4 import BeautifulSoup as bs
 import requests
 import os
 import json
 from manga_search.download import handle_download
+from manga_search.email import send_mail
 from util.colors import ESC, YELLOW
 from util.parse_json import parse_json
-from util.print_log import error, info
+from util.print_log import error, info, warn
 from kcc.kindlecomicconverter.comic2ebook import main as c2e
 import re
+import json
 
 
-try:
-    MANGA_URL = parse_json("data/config.json")["source_url"]
-except KeyError:
-    error(f"No {YELLOW}source_url{ESC} found in {YELLOW}config.json{ESC}")
-    exit()
-
+MANGA_URL = parse_json("data/config.json")["source_url"]
+BOOK_FORMAT = parse_json("data/config.json")["book_format"]
+_already_added_fp = "data/added_manga.json"
+ALREADY_ADDED = parse_json(_already_added_fp)
+CLEANUP = True  # if successfully sent files should be deleted again
 
 def check_all():
     with open("data/manga.json", "r") as f:
         all_mangas = json.load(f)
     for m in all_mangas.keys():
-        download_links = search_manga(m, all_mangas[m])  
+        # fetches the correct download links for the chapters
+        download_links = search_manga(m, all_mangas[m])
+        
+        # makes sure to not download the same chapters again
+        chapters_to_ignore = ALREADY_ADDED.setdefault(m, [])
+        download_links = [(chap, durl) for chap, durl in download_links if chap not in chapters_to_ignore]
+        if len(download_links) == 0:
+            info(f"There are no new chapters to download for {m}")
+            continue
+        fetched_chapters = [chap for chap, durl in download_links]
+        
+        # downloads all the animes
         handle_download(download_links, m)  # downloads the manga
-        c2e(["--profile=KPW", f"--title={m}", "--format=MOBI", f"downloads/{m}/"])  # turns the manga into a mobi file
+        
+        # converts the downloaded images to MOBI
+        root = os.path.join("downloads", m)
+        for f in os.listdir(root):
+            path = os.path.join(root, f)
+            if not os.path.isdir(path):
+                continue
+            info(f"Converting {YELLOW}{path}{ESC}")
+            c2e(["--profile=KPW", f"--format={BOOK_FORMAT}", path])  # turns the manga into a mobi file
+        
+        # sends the mobi files per email
+        files_to_cleanup = []
+        for f in os.listdir(root):
+            path = os.path.join(root, f)
+            if not os.path.isfile(path):
+                continue
+            filename = os.path.basename(f)
+            name, ext = os.path.splitext(filename)
+            if ext.replace(".", "").lower() == BOOK_FORMAT.lower():
+                suc = send_mail(path)
+                if suc:
+                    files_to_cleanup.append(path)
+        
+        if CLEANUP:
+            for path in files_to_cleanup:
+                try:
+                    filename = os.path.basename(path)
+                    name, ext = os.path.splitext(filename)
+                    os.remove(path)  # removes the file
+                    shutil.rmtree(path.replace(ext, ""))  # removes the dir
+                    info(f"Cleaned up the files for {YELLOW}{filename}{ESC}")
+                except FileNotFoundError:
+                    error(f"File with path {YELLOW}{path}{ESC} was not found to delete")
+        
+        ALREADY_ADDED[m] += fetched_chapters
+        with open(_already_added_fp, "w") as f:
+            json.dump(ALREADY_ADDED, f, indent=2)
 
 
-def search_manga(name: str, manga_settings={}):
+def search_manga(name: str, manga_settings={}) -> list[tuple[int, str]]:
     joined_url = os.path.join(MANGA_URL, name)
     website = requests.get(joined_url)
     soup = bs(website.content, "html.parser")
@@ -68,4 +118,5 @@ def search_manga(name: str, manga_settings={}):
         download_links.append((chap_num, download_url))
 
     info(f"Found {len(download_links)} chapters to download for {YELLOW}{name}{ESC}")
+    
     return download_links

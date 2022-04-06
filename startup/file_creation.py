@@ -14,7 +14,7 @@ def check_files():
     
     if not os.path.isfile("data/config.json"):
         with open("data/config.json", "w") as f:
-            f.write('{"source_url": ""}')
+            f.write('{"source_url": "", "kindle_email": "", "book_format": "MOBI"}')
         info(f"Created {YELLOW}config.json{ESC}")
         created_file = True
         
@@ -28,6 +28,12 @@ def check_files():
         with open("data/added_manga.json", "w") as f:
             f.write("{}")
         info(f"Created {YELLOW}added_manga.json{ESC}")
+        created_file = True
+    
+    if not os.path.isfile("data/login.json"):
+        with open("data/login.json", "w") as f:
+            f.write('{"username": "tmp@mail.com", "password": "123"}')
+        info(f"Created {YELLOW}login.json{ESC}")
         created_file = True
     
     if created_file:
