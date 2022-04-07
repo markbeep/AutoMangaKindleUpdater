@@ -6,3 +6,6 @@ If some error about kindlegen is showing up, just throw the `kindlegen.exe` into
 
 Problems:
 - If the book is supposably being sent to the kindle, but it never arrives, make sure you added your email as a confirmed mail on Amazon.
+
+# Installing
+To install, simply clone to your folder using `git clone --recurse-submodules git@github.com:markbeep/AutoMangaKindleUpdater.git` so that the requried submodules are also installed.
