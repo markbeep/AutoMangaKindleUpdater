@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
 
-from util.print_log import info
+from util.print_log import error, info
 
 
 username, password = parse_json("data/login.json").values()
@@ -39,9 +39,15 @@ def send_mail(fp: str):
     text = message.as_string()
 
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-        server.login(username, password)
-        server.sendmail(username, receiver, text)
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+            server.login(username, password)
+            server.sendmail(username, receiver, text)
+    except smtplib.SMTPAuthenticationError:
+        print()
+        error(
+            f"Invalid username and password given in {YELLOW}data/login.json{ESC}")
+        exit(1)
 
     print(f"\t{YELLOW}DONE{ESC}")
     return True
