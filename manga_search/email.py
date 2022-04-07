@@ -1,4 +1,5 @@
-import smtplib, ssl, email
+import smtplib
+import ssl
 from util.colors import ESC, YELLOW
 from util.parse_json import parse_json
 from email import encoders
@@ -22,13 +23,13 @@ def send_mail(fp: str):
     message["From"] = username
     message["To"] = receiver
     message["Subject"] = "convert"
-    
+
     with open(fp, "rb") as attachment:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(attachment.read())
-    
+
     filename = os.path.basename(fp)
-    
+
     encoders.encode_base64(part)
     part.add_header(
         "Content-Disposition",
@@ -36,11 +37,11 @@ def send_mail(fp: str):
     )
     message.attach(part)
     text = message.as_string()
-        
+
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
         server.login(username, password)
         server.sendmail(username, receiver, text)
-    
+
     print(f"\t{YELLOW}DONE{ESC}")
     return True
