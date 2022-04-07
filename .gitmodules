@@ -1,3 +1,6 @@
 [submodule "kcc"]
 	path = kcc
 	url = git@github.com:ciromattia/kcc.git
+[submodule "kindlegen-docker"]
+	path = kindlegen-docker
+	url = git@github.com:wiltonsr/kindlegen-docker.git
