@@ -37,10 +37,12 @@ Downloads mangas, converts them to .mobi files and then sends them to your Kindl
 
 ## Linux
 1. Download the Linux version of KindleGen [over here](https://archive.org/download/kindlegen2.9/kindlegen_linux_2.6_i386_v2_9.tar.gz)
-2. Go to where you downloaded it and execute `tar xvfz kindlegen_linux_2.6_i386_v2_9.tar.gz -C ./KindleGen`
-3. Move the file `kindlegen` to `/usr/local/bin/
+2. Go to where you downloaded it, create a folder and extract the contents inside that folder
+ - `mkdir KindleGen`
+ - `tar xvfz kindlegen_linux_2.6_i386_v2_9.tar.gz -C ./KindleGen`
+4. Move the file `kindlegen` to `/usr/local/bin/
   - `mv ~/KindleGen/kindlegen /usr/local/bin/`
-4. Done (you should now be able to call `kindlegen` in the terminal)
+5. Done (you should now be able to call `kindlegen` in the terminal)
 
 ## MacOS
 *I have no way of trying this out, but from what I gather it should be similar to the Windows install:*
