@@ -37,7 +37,7 @@ def check_all():
         fetched_chapters = [chap for chap, durl in download_links]
 
         # downloads all the animes
-        handle_download(download_links, m)  # downloads the manga
+        fetched_chapters = handle_download(download_links, m)  # downloads the manga
 
         # converts the downloaded images to MOBI
         root = os.path.join("downloads", m)
