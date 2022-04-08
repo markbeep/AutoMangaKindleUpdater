@@ -1,6 +1,7 @@
 import os
 from util.colors import YELLOW, ESC
 from util.print_log import info
+import json
 
 
 def check_files():
@@ -15,14 +16,15 @@ def check_files():
 
     if not os.path.isfile("data/config.json"):
         with open("data/config.json", "w") as f:
-            f.write('{"kindle_email": "", "book_format": "MOBI"}')
+            j = {"kindle_email": ["tmp@mail.com"], "book_format": "MOBI"}
+            json.dump(j, f, indent=4)
         info(f"Created {YELLOW}config.json{ESC}")
         created_file = True
 
     if not os.path.isfile("data/manga.json"):
         with open("data/manga.json", "w") as f:
-            f.write(
-                '{"One_Piece": {"active": true,"ignore_episodes_below": -1, "ignore_episodes_above": -1}}')
+            j = {"One_Piece": {"active": True,"ignore_episodes_below": -1, "ignore_episodes_above": -1}}
+            json.dump(j, f, indent=4)
         info(f"Created {YELLOW}manga.json{ESC}")
         created_file = True
 
@@ -34,7 +36,8 @@ def check_files():
 
     if not os.path.isfile("data/login.json"):
         with open("data/login.json", "w") as f:
-            f.write('{"username": "tmp@mail.com", "password": "123"}')
+            j = {"username": "tmp@mail.com", "password": "123"}
+            json.dump(j, f, indent=4)
         info(f"Created {YELLOW}login.json{ESC}")
         created_file = True
 

@@ -18,14 +18,16 @@ BOOK_FORMAT = parse_json("data/config.json")["book_format"]
 _already_added_fp = "data/added_manga.json"
 ALREADY_ADDED = parse_json(_already_added_fp)
 CLEANUP = True  # if successfully sent files should be deleted again
+ALL_MANGAS = parse_json("data/manga.json")
 
 
 def check_all():
-    with open("data/manga.json", "r") as f:
-        all_mangas = json.load(f)
-    for m in all_mangas.keys():
+    for m in ALL_MANGAS.keys():
+        if not ALL_MANGAS[m]["active"]:
+            info(f"{YELLOW}{m}{ESC} is not active, skipping")
+            continue
         # fetches the correct download links for the chapters
-        download_links = search_manga(m, all_mangas[m])
+        download_links = search_manga(m, ALL_MANGAS[m])
 
         # makes sure to not download the same chapters again
         chapters_to_ignore = ALREADY_ADDED.setdefault(m, [])
@@ -76,7 +78,7 @@ def check_all():
 
         ALREADY_ADDED[m] += fetched_chapters
         with open(_already_added_fp, "w") as f:
-            json.dump(ALREADY_ADDED, f, indent=2)
+            json.dump(ALREADY_ADDED, f, indent=4)
 
 
 def search_manga(name: str, manga_settings={}) -> list[tuple[int, str]]:
