@@ -41,7 +41,7 @@ Downloads mangas, converts them to .mobi files and then sends them to your Kindl
  - `mkdir KindleGen`
  - `tar xvfz kindlegen_linux_2.6_i386_v2_9.tar.gz -C ./KindleGen`
 4. Move the file `kindlegen` to `/usr/local/bin/
-  - `mv ~/KindleGen/kindlegen /usr/local/bin/`
+  - `mv ./KindleGen/kindlegen /usr/local/bin/`  (requires sudo elevation)
 5. Done (you should now be able to call `kindlegen` in the terminal)
 
 ## MacOS
