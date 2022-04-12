@@ -4,7 +4,7 @@ import requests
 import os
 import json
 from manga_search.download import handle_download
-from manga_search.email import send_mail
+from manga_search.email import send_mail, send_notification
 from util.colors import ESC, YELLOW
 from util.parse_json import fetch_json, parse_json
 from util.print_log import error, info
@@ -36,7 +36,6 @@ def check_all():
         if len(download_links) == 0:
             info(f"There are no new chapters to download for {m}")
             continue
-        fetched_chapters = [chap for chap, durl in download_links]
 
         # downloads all the animes
         fetched_chapters = handle_download(download_links, m)  # downloads the manga
@@ -63,6 +62,9 @@ def check_all():
                 suc = send_mail(path)
                 if suc:
                     files_to_cleanup.append(path)
+        
+        if len(fetched_chapters) > 0:
+            send_notification(m, f"Sent chapters:\n{', '.join([str(x) for x in fetched_chapters])}")
 
         if CLEANUP:
             for path in files_to_cleanup:

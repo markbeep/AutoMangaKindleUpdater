@@ -16,7 +16,7 @@ def check_files():
 
     if not os.path.isfile("data/config.json"):
         with open("data/config.json", "w") as f:
-            j = {"kindle_email": ["tmp@mail.com"], "book_format": "MOBI"}
+            j = {"kindle_email": ["tmp@mail.com"], "book_format": "MOBI", "notification_email": ["tmp@mail.com"]}
             json.dump(j, f, indent=4)
         info(f"Created {YELLOW}config.json{ESC}")
         created_file = True
