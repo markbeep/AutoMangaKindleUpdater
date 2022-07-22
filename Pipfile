@@ -11,6 +11,9 @@ psutil = ">=5.0.0"
 python-slugify = "<3.0.0,>=1.2.1"
 raven = ">=6.0.0"
 requests = "*"
+google-api-python-client = "*"
+oauth2client = "*"
+apiclient = "*"
 
 [dev-packages]
 

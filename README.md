@@ -19,7 +19,9 @@ Downloads mangas, converts them to .mobi files and then sends them to your Kindl
 3. Install Pipenv
 4. Call `pipenv install` to install the required packages
 5. Enter the Python environment with `pipenv shell` and then run `main.py` (or `pipenv run python main.py`)
-6. Add the login info to your throwaway GMail account into `data/login.json`
+![](/assets/gmailapi.png)
+1. Enable the GMail API on the developer page [here](https://console.developers.google.com/start/api?id=gmail).
+2. Place the downloaded credentials JSON (`client_secret.json`) into the `data` directory.
 7. Update `manga.json` with the mangas you want downloaded and the amount that should be downloaded
 8. Update `config.json` with the email address of your Kindle
 9. Run `main.py` again and watch the magic happen.

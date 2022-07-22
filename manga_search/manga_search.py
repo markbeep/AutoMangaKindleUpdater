@@ -38,7 +38,8 @@ def check_all():
             continue
 
         # downloads all the animes
-        fetched_chapters = handle_download(download_links, m)  # downloads the manga
+        fetched_chapters = handle_download(
+            download_links, m)  # downloads the manga
 
         # converts the downloaded images to MOBI
         root = os.path.join("downloads", m)
@@ -62,9 +63,11 @@ def check_all():
                 suc = send_mail(path)
                 if suc:
                     files_to_cleanup.append(path)
-        
+
         if len(fetched_chapters) > 0:
-            send_notification(m, f"Sent chapters:\n{', '.join([str(x) for x in fetched_chapters])}")
+            send_notification(
+                m, f"Sent chapters:\n{', '.join([str(x) for x in fetched_chapters])}")
+            info("Sent notification mail")
 
         if CLEANUP:
             for path in files_to_cleanup:
