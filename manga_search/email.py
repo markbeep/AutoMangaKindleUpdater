@@ -60,8 +60,7 @@ def send(message):
 
 def message_main(fp: str):
     filename = os.path.basename(fp)
-    message = MIMEMultipart()
-    message["Subject"] = "convert"
+    message = MIMEMultipart("mixed")
     message["To"] = ", ".join(all_receivers)
 
     with open(fp, "rb") as attachment:
@@ -72,8 +71,7 @@ def message_main(fp: str):
 
     encoders.encode_base64(part)
     part.add_header(
-        "Content-Disposition",
-        f"attachment; filename = {filename}"
+        "Content-Disposition", "attachment", filename=filename
     )
     message.attach(part)
 
