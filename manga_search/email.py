@@ -6,11 +6,11 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
-from util.print_log import error, info
+from util.print_log import info
 import base64
 from googleapiclient import errors, discovery
 import oauth2client
-from oauth2client import client, tools, file
+from oauth2client import client, tools
 
 
 CLIENT_SECRET_FILE = "data/client_secret.json"
@@ -50,8 +50,8 @@ def send_notification(title: str, msg: str):
 
 def send(message):
     credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build("gmail", "v1", http=http)
+    # http = credentials.authorize(httplib2.Http())
+    service = discovery.build("gmail", "v1", credentials=credentials)
     try:
         (service.users().messages().send(userId="me", body=message).execute())
     except errors.HttpError as error:
@@ -64,15 +64,15 @@ def message_main(fp: str):
     message["To"] = ", ".join(all_receivers)
 
     with open(fp, "rb") as attachment:
-        part = MIMEBase("application", "octet-stream")
+        part = MIMEBase("application", "epub+zip", name=filename)
         part.set_payload(attachment.read())
 
     filename = os.path.basename(fp)
 
     encoders.encode_base64(part)
-    part.add_header(
-        "Content-Disposition", "attachment", filename=filename
-    )
+    part.add_header("Content-Disposition", "attachment",
+                    filename=filename)
+    part.replace_header("Content-Transfer-Encoding", "base64")
     message.attach(part)
 
     info(f"Sending {YELLOW}{filename}{ESC} by mail", end="")
