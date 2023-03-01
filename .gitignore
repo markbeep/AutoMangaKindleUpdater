@@ -1,5 +1,6 @@
-data
 __pycache__
-downloads
 *.exe
-.credentials
+shell.nix
+*.envrc
+*.pdf
+dist

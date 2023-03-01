@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "AutoMangaKindleUpdater"
+version = "2.0.0"
+description = ""
+authors = ["Mark <mrkswrn@gmail.com>"]
+readme = "README.md"
+packages = [{include = "AutoMangaKindleUpdater"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+loguru = "^0.6.0"
+pillow = "^9.4.0"
+tqdm = "^4.64.1"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+pylint = "^2.16.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
